@@ -11,7 +11,7 @@
 ```json
 {
   "sentences" : {
-       "<sentence>"":<label>
+       "<sentence>":"<label>"
   },
   "class_list" : [["<list of phrases in label1>"]],
    "threshold" : "<float>"
