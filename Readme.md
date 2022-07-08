@@ -8,16 +8,12 @@
 ## Input request format
 - Method : /POST/
 - Body :
-'''json
-    {
-         sentences : {
-             <sentence>:<label>,
-             ..
-        },
-        class_list : [
-         [<list of phrases in label1>],
-         ..
-         ],
-         threshold : <float>,
-     }
-'''
+```json
+{
+  "sentences" : {
+       "<sentence>"":<label>
+  },
+  "class_list" : [["<list of phrases in label1>"]],
+   "threshold" : "<float>"
+}
+```
