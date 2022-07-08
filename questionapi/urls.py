@@ -15,7 +15,7 @@ router.register(r'snippet', views.SnippetViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('api/', include(router.urls)),
-    #path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('docs/', include_docs_urls(title='Snippet API')),
-    path('silk/', include('silk.urls', namespace='silk')),
+    path('api/CosineSimilarity/', views.CosineSimilarity.as_view(), name='CosineSimilarity'),
+    path('api/BERTClassification/', views.BERTClassification.as_view(), name='BERTClassification'),
 ]
