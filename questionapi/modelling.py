@@ -101,19 +101,25 @@ def BERTCosinePrediction(sentence, labels):
         max_cosine = max(cosine_with_each_label)
         avg_cosine = sum(cosine_with_each_label)/len(cosine_with_each_label)
 
-        label_avg_embedding = torch.empty(100)
-        for embed in label_embed:
-            label_avg_embedding = label_avg_embedding + embed
+        label_avg_embedding = label_embed[0]
+        print("--------------------------------------------------")
+        print(label_avg_embedding)
+        
+        for i in range(1,len(label_embed)):
+            label_avg_embedding = label_avg_embedding + label_embed[i]
 
         label_avg_embedding = label_avg_embedding/len(label_embed)
         cosine_oftheavglabels = F.cosine_similarity(sentence_embed.float(), label_avg_embedding)
 
+        print("--------------------------------------------------")
+        print(label_avg_embedding)
+
         details.append(
             {
-                "Max cosine similarity": max_cosine,
-                "Average cosine similarity": avg_cosine,
-                "Cosine similarity witht he class average": cosine_oftheavglabels,
-                "Sum of all cosine similarity": max_cosine+avg_cosine+cosine_oftheavglabels
+                "Max cosine similarity": max_cosine[0],
+                "Average cosine similarity": avg_cosine[0],
+                "Cosine similarity with the class average": cosine_oftheavglabels[0],
+                "Sum of all cosine similarity": max_cosine[0]+avg_cosine[0]+cosine_oftheavglabels[0]
             }
         )
 
