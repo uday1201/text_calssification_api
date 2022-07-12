@@ -18,4 +18,5 @@ urlpatterns = [
     path('docs/', include_docs_urls(title='Snippet API')),
     path('api/CosineSimilarity/', views.CosineSimilarity.as_view(), name='CosineSimilarity'),
     path('api/BERTClassification/', views.BERTClassification.as_view(), name='BERTClassification'),
+    path('api/evaluation/', views.evaluation.as_view(), name='evaluation'),
 ]

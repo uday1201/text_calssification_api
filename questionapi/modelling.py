@@ -7,6 +7,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from transformers import pipeline
 classifier = pipeline("text-classification", model = "cross-encoder/qnli-electra-base")
+import torch
 
 # it takes input as a json of sentences and a list of labels as [<list of keywords for label 1>, <>, ..]
 # it ouputs a list of encoding objects -> {
@@ -84,9 +85,78 @@ def cosineSimilarity(sentence_net, threshold):
         print("------------------------------------------------------")
     return predictions
 
+
+def BERTCosinePrediction(sentence, labels):
+    details = []
+    sentence_embed = tokenizer.encode(sentence,return_tensors='pt', padding='max_length', max_length=100)
+    labels_metric =[]
+    for label in labels:
+        label_embed = []
+        cosine_with_each_label = []
+        for l in label:
+            l_embed = tokenizer.encode(l,return_tensors='pt', padding='max_length', max_length=100)
+            label_embed.append(l_embed)
+            cosine_with_each_label.append(F.cosine_similarity(sentence_embed.float(), l_embed.float()))
+
+        max_cosine = max(cosine_with_each_label)
+        avg_cosine = sum(cosine_with_each_label)/len(cosine_with_each_label)
+
+        label_avg_embedding = torch.empty(100)
+        for embed in label_embed:
+            label_avg_embedding = label_avg_embedding + embed
+
+        label_avg_embedding = label_avg_embedding/len(label_embed)
+        cosine_oftheavglabels = F.cosine_similarity(sentence_embed.float(), label_avg_embedding)
+
+        details.append(
+            {
+                "Max cosine similarity": max_cosine,
+                "Average cosine similarity": avg_cosine,
+                "Cosine similarity witht he class average": cosine_oftheavglabels,
+                "Sum of all cosine similarity": max_cosine+avg_cosine+cosine_oftheavglabels
+            }
+        )
+
+        labels_metric.append(max_cosine+avg_cosine+cosine_oftheavglabels)
+    prediction = labels_metric.index(max(labels_metric))+1
+
+    return prediction, details
+
+
+
 ###########
 #BERT Text classification
 ###########
+
+def BCEPrediction(sentence, labels):
+    details = []
+    labels_score = []
+    for label in labels:
+        scores= []
+        for l in label:
+            c = classifier(sentence+" , "+l)
+            print(l, c)
+            scores.append(c[0]['score'])
+
+        score_mean = np.mean(scores)
+        score_median = np.median(scores)
+        score_max = max(scores)
+
+        details.append(
+            {
+                "Mean similarity" : score_mean,
+                "Median similarity": score_median,
+                "Max similarity": score_max,
+                "Sum ": score_mean+score_median+score_max
+            }
+        )
+
+        labels_score.append(score_mean+score_median+score_max)
+
+    prediction = labels_score.index(max(labels_score))+1
+
+    return prediction, details
+
 
 def BERTCrossEncoder(sentences, labels, stat=None):
     predictions = []
