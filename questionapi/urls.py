@@ -19,4 +19,5 @@ urlpatterns = [
     path('api/CosineSimilarity/', views.CosineSimilarity.as_view(), name='CosineSimilarity'),
     path('api/BERTClassification/', views.BERTClassification.as_view(), name='BERTClassification'),
     path('api/evaluation/', views.evaluation.as_view(), name='evaluation'),
+    path('api/q1processing/', views.q1processing.as_view(), name='q1processing'),
 ]

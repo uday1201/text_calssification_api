@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
+from .userstorymodelling import *
 from .modelling import *
 from rest_framework.views import APIView
 from rest_framework import viewsets
@@ -11,6 +12,26 @@ from rest_framework.response import Response
 # from django.views.decorators.csrf import csrf_exempt
 #
 # @csrf_exempt
+
+class q1processing(APIView):
+    #{
+    #    "sentence":["user persona", "action to be performed","goals"],
+    #}
+    def post(self, request):
+        data = request.body.decode('utf-8')
+        valid_data = json.loads(data)
+
+        input = valid_data["sentence"]
+        print(input)
+        results = Q1BERTEncodingCosine(input)
+
+        return Response({
+            "Persona match":results[0],
+            "Action match":results[1],
+            "Goal match":results[2]
+
+            })
+
 
 class evaluation(APIView):
     # {
