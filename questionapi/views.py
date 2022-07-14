@@ -9,9 +9,12 @@ from .models import *
 from .serializers import *
 import json
 from rest_framework.response import Response
+import requests
 # from django.views.decorators.csrf import csrf_exempt
 #
 # @csrf_exempt
+
+
 
 class q1processing(APIView):
     #{
@@ -52,10 +55,15 @@ class evaluation(APIView):
 
         if valid_data["question"]=="q1":
             labels = [["Monthly fee", "Fee per user", "Charge", "Cost", "Average revenue per user", "Recurring monthly fee", "Fee charged per user", "Monthly service charge", "User fee", "Monthly subscription fee"], ["users", "Subscribers", "Customers", "clients", "patrons", "payees", "members"], ["Average lifetime", "lifespan", "Duration subscription", "Churn", "Attrition", "churn rate", "Churn analysis", "Churn prediction", "Churn prevention", "Reducing churn", "Increasing retention", "retention rate", "Customer attrition rate", "Attrition analysis", "Attrition prediction", "Attrition prevention"]]
-        else:
-            labels = [['Make sure questions are easy to understand', 'Make sure questions are easy to direct', 'Make sure questions are easy to straightforward', 'Use short questions', 'Use succinct questions', 'Use clear questions', 'Avoid questions that are too long'], ['Keep questions open ended', 'Do not ask yes/no questions', 'Do not ask closed questions', 'Do not ask leading questions', 'Avoid questions that suggest the answer you want', "Don't ask directly what they want"], ['Have a logical structure to the questions', 'Questions should flow from one to the other', 'Questions should be sequenced in a natural way', 'Warm up before going into the detailed questions', 'Start with some easier questions to help them relax', 'Prepare your questions beforehand']]
 
+            url = "http://ec2-3-110-115-41.ap-south-1.compute.amazonaws.com:5001/model/parse"
+
+        else:
+            labels = [['Monthly fee', 'Fee per user ', 'Charge', 'Cost', 'Average revenue per user', 'Monthly payment', 'Recurring monthly charge', 'Monthly service fee', 'Monthly access fee', 'Monthly maintenance fee', 'Membership fee', 'Subscription fee', 'Dues', 'charge per user', 'fee per user'], ['users', 'Subscribers', 'Customers', 'clients', 'patrons', 'payees', 'members', 'number of people using the service', 'number of users of the service', 'amount of people using the service', 'how many people are using the service', 'how popular is the service', 'how many users does the service have', 'is the service used by a lot of people', 'how well-known is the service', 'what is the user base for the service', 'how big is the market for the service'], ['Average customer lifetime', 'Customer lifespan', 'Duration of subscription', 'Churn', 'Attrition', 'employee turnover', 'Attrition rates', 'Average customer lifetime value', 'Average length of customer life cycle', 'Average time customers remain active', 'Customer attrition rate over time', 'How long do customers stay on average?', 'What is the typical lifespan of a customer?', 'staff turnover', 'Average client lifetime', 'Median customer lifetime', 'Ordinary customer lifetime']]
         response = []
+
+        url = "http://ec2-3-110-115-41.ap-south-1.compute.amazonaws.com:5002/model/parse"
+
 
         if "BCE" in models:
             prediction, details = BCEPrediction(sentence, labels)
@@ -76,6 +84,25 @@ class evaluation(APIView):
                     "details": details
                 }
             )
+
+        if "rasa" in models:
+            payload = '{"text": "%s"}'%sentence
+            headers = {
+                'content-type': "application/json",
+                }
+
+            rasaresponse = requests.request("POST", url, data=payload, headers=headers)
+            prediction = rasaresponse.json()['intent']['name']
+            details = rasaresponse.json()['intent_ranking']
+
+            response.append(
+                {
+                    "model": "Rasa Bot",
+                    "prediction": prediction,
+                    "details": details
+                }
+            )
+
 
         return Response(response)
 
