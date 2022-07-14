@@ -1,11 +1,11 @@
-## Endpoints
-- localhost:<port>/api/CosineSimilarity/
+# Endpoints
+## localhost:<port>/api/CosineSimilarity/
   > Endpoint to train a model with BERT (deepset/sentence_bert) and then finding cosine similarity
 
 - localhost:<port>/api/BERTClassification/
   > Text classification using BERT pretrained (cross-encoder/qnli-electra-base) model
 
-## Input request format
+### Input request format
 - Method : /POST/
 - Body :
 ```json
@@ -18,10 +18,10 @@
 }
 ```
 
-- localhost:<port>/api/evaluation/
+## localhost:<port>/api/evaluation/
   > getting evaluation metrics in format for the steamlit app for revenue and interview questions
 
-## Input request format
+### Input request format
 - Method : /POST/
 - Body :
 ```json
@@ -33,10 +33,10 @@
 }
 ```
 
-- localhost:<port>/api/q1processing/
+## localhost:<port>/api/q1processing/
   > getting evaluation metrics in format for the steamlit app for revenue and interview questions
 
-## Input request format
+### Input request format
 - Method : /POST/
 - Body :
 ```json
