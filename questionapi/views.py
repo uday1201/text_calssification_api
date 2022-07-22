@@ -26,12 +26,15 @@ class q1processing(APIView):
 
         input = valid_data["sentence"]
         print(input)
-        results = Q1BERTEncodingCosine(input)
+        details,results = Q1BERTEncodingCosine(input)
 
         return Response({
             "Persona match":results[0],
+            "Persona details": details[0],
             "Action match":results[1],
-            "Goal match":results[2]
+            "Action details": details[1],
+            "Goal match":results[2],
+            "Goal details":details[2]
 
             })
 
@@ -53,7 +56,7 @@ class evaluation(APIView):
         if "label" in valid_data:
             test_label = valid_data["label"]
 
-        if valid_data["question"]=="q1":
+        if valid_data["question"]=="q3":
             labels = [['Monthly fee', 'Fee per user ', 'Charge', 'Cost', 'Average revenue per user', 'Monthly payment', 'Recurring monthly charge', 'Monthly service fee', 'Monthly access fee', 'Monthly maintenance fee', 'Membership fee', 'Subscription fee', 'Dues', 'charge per user', 'fee per user'], ['users', 'Subscribers', 'Customers', 'clients', 'patrons', 'payees', 'members', 'number of people using the service', 'number of users of the service', 'amount of people using the service', 'how many people are using the service', 'how popular is the service', 'how many users does the service have', 'is the service used by a lot of people', 'how well-known is the service', 'what is the user base for the service', 'how big is the market for the service'], ['Average customer lifetime', 'Customer lifespan', 'Duration of subscription', 'Churn', 'Attrition', 'employee turnover', 'Attrition rates', 'Average customer lifetime value', 'Average length of customer life cycle', 'Average time customers remain active', 'Customer attrition rate over time', 'How long do customers stay on average?', 'What is the typical lifespan of a customer?', 'staff turnover', 'Average client lifetime', 'Median customer lifetime', 'Ordinary customer lifetime']]
 
             url = "http://ec2-65-1-1-17.ap-south-1.compute.amazonaws.com:5001/model/parse"

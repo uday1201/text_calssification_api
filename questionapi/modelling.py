@@ -104,7 +104,7 @@ def BERTCosinePrediction(sentence, labels):
         label_avg_embedding = label_embed[0]
         print("--------------------------------------------------")
         print(label_avg_embedding)
-        
+
         for i in range(1,len(label_embed)):
             label_avg_embedding = label_avg_embedding + label_embed[i]
 
@@ -124,7 +124,7 @@ def BERTCosinePrediction(sentence, labels):
         )
 
         labels_metric.append(max_cosine+avg_cosine+cosine_oftheavglabels)
-    prediction = labels_metric.index(max(labels_metric))+1
+    prediction = labels_metric.index(max(labels_metric))
 
     return prediction, details
 
@@ -159,7 +159,7 @@ def BCEPrediction(sentence, labels):
 
         labels_score.append(score_mean+score_median+score_max)
 
-    prediction = labels_score.index(max(labels_score))+1
+    prediction = labels_score.index(max(labels_score))
 
     return prediction, details
 
@@ -185,9 +185,9 @@ def BERTCrossEncoder(sentences, labels, stat=None):
 
         print(label_max)
         if max(label_max)<.75:
-            predictions.append(len(labels)+1)
+            predictions.append(len(labels))
         else:
-            predictions.append(label_max.index(max(label_max))+1)
+            predictions.append(label_max.index(max(label_max)))
     return predictions
 
 # takes list of predictions and labels

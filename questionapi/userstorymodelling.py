@@ -1,3 +1,4 @@
+import numpy as np
 # creating personas list
 functions = ['Accountant','Accounts','Accounts Receivables','RTR','R2R','Auditor','Internal auditor','Risk','Finance','Chief Financial Officer','CFO']
 designations = ['Executive','Manager','Clerk','Coordinator','Supervisor','Bookkeeper','Specialist']
@@ -45,6 +46,19 @@ def Q1BERTEncodingCosine(input):
     perform_action_matching = cosine_similarity(perform_action_input_embedding,perform_action_embedding)
     goals_matching = cosine_similarity(goals_input_embedding,goals_embedding)
 
+    # cosine details
+    persona_details = {"Cosine mean":np.mean(personas_matching[0]),
+                   "Cosine median":np.median(personas_matching[0]),
+                   "Cosine max":max(personas_matching[0])}
+
+    perform_action_details = {"Cosine mean":np.mean(perform_action_matching[0]),
+                       "Cosine median":np.median(perform_action_matching[0]),
+                       "Cosine max":max(perform_action_matching[0])}
+
+    goals_matching_details = {"Cosine mean":np.mean(goals_matching[0]),
+                       "Cosine median":np.median(goals_matching[0]),
+                       "Cosine max":max(goals_matching[0])}
+
     # taking decisions on the basis if similarity
     persona_match = perform_action_match = goals_matching_match = False
     if max(personas_matching[0])>=.9:
@@ -54,4 +68,4 @@ def Q1BERTEncodingCosine(input):
     if max(goals_matching[0])>=.9:
         goals_matching_match = True
 
-    return [persona_match,perform_action_match,goals_matching_match]
+    return [persona_details,perform_action_details,goals_matching_details],[persona_match,perform_action_match,goals_matching_match]
