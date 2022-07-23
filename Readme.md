@@ -13,7 +13,7 @@
   "sentences" : {
        "<sentence>":"<label>"
   },
-  "class_list" : [["<list of phrases in label1>"]],
+  "question" : " 'q1'/'q2' ",
    "threshold" : "<float>"
 }
 ```

@@ -51,6 +51,7 @@ def BERTencoding(sentences,labels):
 # Outputs the list of predictions
 def cosineSimilarity(sentence_net, threshold):
     predictions =[]
+    details = []
     for sentence in sentence_net:
         print("----------Sentence similarity for : ",sentence["sentence"])
         labels_similarity = []
@@ -66,24 +67,24 @@ def cosineSimilarity(sentence_net, threshold):
                 print(f'label: {label[ind]} \t similarity: {similarities[ind]}')
                 similarity_list.append(float(similarities[ind]))
 
+            mean_cosine = np.mean(similarity_list)
+            max_cosine = max(similarity_list)
+            cosine_class_mean = float(F.cosine_similarity(encoding["sentence_rep"], torch.mean(encoding['label_reps'])))
             # getting the mean similarity for each label
-            print("Mean similarity :", np.mean(similarity_list))
-            labels_similarity.append(np.mean(similarity_list))
+            labels_similarity.append(mean_cosine+max_cosine+cosine_class_mean)
             print("\n")
 
+        details.append(labels_similarity)
         # getting the predicted class
         print(labels_similarity)
         predicted_labels = [1 if (y>threshold and y==max(labels_similarity))else 0 for y in labels_similarity]
         if 1 in predicted_labels:
-            predicted_labels.append(0)
+            predictions.append(predicted_labels.index(max(predicted_labels)))
         else:
-            predicted_labels.append(1)
+            predictions.append(-1)
 
-        # append the predicted class to the prediction list
-        predictions.append(predicted_labels.index(1)+1)
-        print("Predicted class : ", predicted_labels.index(1)+1)
-        print("------------------------------------------------------")
-    return predictions
+
+    return details,predictions
 
 
 def BERTCosinePrediction(sentence, labels):
@@ -164,31 +165,30 @@ def BCEPrediction(sentence, labels):
     return prediction, details
 
 
-def BERTCrossEncoder(sentences, labels, stat=None):
+def BERTCrossEncoder(sentences, labels, threshold):
     predictions = []
+    details = []
     for sentence in sentences:
         print("Sentence --> " + sentence)
         label_max = []
         for label in labels:
-            score_max = []
+            scores = []
             for l in label:
                 c = classifier(sentence+" , "+l)
                 print(l, c)
-                score_max.append(c[0]['score'])
+                scores.append(c[0]['score'])
 
-            if stat == "MEAN":
-                label_max.append(np.mean(score_max))
-            elif stat == "MEDIAN":
-                label_max.append(np.median(score_max))
-            else:
-                label_max.append(max(score_max))
-
+            score_mean = np.mean(scores)
+            score_median = np.median(scores)
+            score_max = max(scores)
+            label_max.append(score_max+score_median+score_mean)
+        details.append(label_max)
         print(label_max)
-        if max(label_max)<.75:
-            predictions.append(len(labels))
+        if max(label_max)<threshold:
+            predictions.append(-1)
         else:
             predictions.append(label_max.index(max(label_max)))
-    return predictions
+    return details,predictions
 
 # takes list of predictions and labels
 def evaluation(class_labels, predictions, count_label):
