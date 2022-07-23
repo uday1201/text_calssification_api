@@ -120,6 +120,18 @@ class evaluation(APIView):
             prediction = rasaresponse.json()['intent']['name']
             details = rasaresponse.json()['intent_ranking']
 
+            if valid_data["save"]:
+                entry = Record.objects.create(
+                    sentence = sentence,
+                    model = "RASA",
+                    question = valid_data["question"],
+                    label = valid_data["label"],
+                    prediction = prediction,
+                    details = details
+
+                )
+                entry.save()
+
             response.append(
                 {
                     "model": "Rasa Bot",
