@@ -117,10 +117,10 @@ def BERTCosinePrediction(sentence, labels):
 
         details.append(
             {
-                "Max cosine similarity": max_cosine[0],
-                "Average cosine similarity": avg_cosine[0],
-                "Cosine similarity with the class average": cosine_oftheavglabels[0],
-                "Sum of all cosine similarity": max_cosine[0]+avg_cosine[0]+cosine_oftheavglabels[0]
+                "Max cosine similarity": float(max_cosine[0]),
+                "Average cosine similarity": float(avg_cosine[0]),
+                "Cosine similarity with the class average": float(cosine_oftheavglabels[0]),
+                "Sum of all cosine similarity": float(max_cosine[0]+avg_cosine[0]+cosine_oftheavglabels[0])
             }
         )
 
@@ -151,10 +151,10 @@ def BCEPrediction(sentence, labels):
 
         details.append(
             {
-                "Mean similarity" : score_mean,
-                "Median similarity": score_median,
-                "Max similarity": score_max,
-                "Sum ": score_mean+score_median+score_max
+                "Mean similarity" : float(score_mean),
+                "Median similarity": float(score_median),
+                "Max similarity": float(score_max),
+                "Sum ": float(score_mean+score_median+score_max)
             }
         )
 
