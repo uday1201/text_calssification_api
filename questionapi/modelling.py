@@ -87,7 +87,7 @@ def cosineSimilarity(sentence_net, threshold):
     return details,predictions
 
 
-def BERTCosinePrediction(sentence, labels):
+def BERTCosinePrediction(sentence, labels, threshold):
     details = []
     sentence_embed = tokenizer.encode(sentence,return_tensors='pt', padding='max_length', max_length=100)
     labels_metric =[]
@@ -125,7 +125,11 @@ def BERTCosinePrediction(sentence, labels):
         )
 
         labels_metric.append(max_cosine+avg_cosine+cosine_oftheavglabels)
-    prediction = labels_metric.index(max(labels_metric))
+
+    if max(labels_metric)< threshold:
+        prediction = -1
+    else:
+        prediction = labels_metric.index(max(labels_metric))
 
     return prediction, details
 
@@ -135,7 +139,7 @@ def BERTCosinePrediction(sentence, labels):
 #BERT Text classification
 ###########
 
-def BCEPrediction(sentence, labels):
+def BCEPrediction(sentence, labels, threshold):
     details = []
     labels_score = []
     for label in labels:
@@ -160,7 +164,10 @@ def BCEPrediction(sentence, labels):
 
         labels_score.append(score_mean+score_median+score_max)
 
-    prediction = labels_score.index(max(labels_score))
+    if max(labels_score)< threshold:
+        prediction = -1
+    else:
+        prediction = labels_score.index(max(labels_score))
 
     return prediction, details
 

@@ -52,7 +52,8 @@ class evaluation(APIView):
         valid_data = json.loads(data)
         sentence = valid_data["sentence"]
         models = valid_data["models"]
-
+        thresholds = valid_data["thresholds"]
+        print(thresholds)
         if "label" in valid_data:
             test_label = valid_data["label"]
 
@@ -61,15 +62,21 @@ class evaluation(APIView):
 
             url = "http://ec2-65-1-1-17.ap-south-1.compute.amazonaws.com:5001/model/parse"
 
+            bcethreshold = thresholds["q3bce"]
+            cosinethreshold = thresholds["q3cosine"]
+
         else:
             labels = [['Make sure questions are easy to understand', 'Make sure questions are easy to direct', 'Make sure questions are easy to straightforward', 'Use short questions', 'Use succinct questions', 'Use clear questions', 'Avoid questions that are too long'], ['Keep questions open ended', 'Do not ask yes/no questions', 'Do not ask closed questions', 'Do not ask leading questions', 'Avoid questions that suggest the answer you want', "Don't ask directly what they want"], ['Have a logical structure to the questions', 'Questions should flow from one to the other', 'Questions should be sequenced in a natural way', 'Warm up before going into the detailed questions', 'Start with some easier questions to help them relax', 'Prepare your questions beforehand']]
 
             url = "http://ec2-65-1-1-17.ap-south-1.compute.amazonaws.com:5002/model/parse"
 
+            bcethreshold = thresholds["q2bce"]
+            cosinethreshold = thresholds["q2cosine"]
+
         response = []
 
         if "BCE" in models:
-            prediction, details = BCEPrediction(sentence, labels)
+            prediction, details = BCEPrediction(sentence, labels, bcethreshold)
             if valid_data["save"]:
                 entry = Record.objects.create(
                     sentence = sentence,
@@ -90,7 +97,7 @@ class evaluation(APIView):
             )
 
         if "BERTCosine" in models:
-            prediction, details = BERTCosinePrediction(sentence, labels)
+            prediction, details = BERTCosinePrediction(sentence, labels, cosinethreshold)
             if valid_data["save"]:
                 entry = Record.objects.create(
                     sentence = sentence,
